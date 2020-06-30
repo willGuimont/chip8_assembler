@@ -27,119 +27,121 @@ int Token::getLineNumber() const {
 std::string Token::toString() const {
     std::ostringstream out;
     switch (tokenType) {
-        case Token::TokenType::Clear:
+        case TokenType::System:
+            return "SYS";
+            break;
+        case TokenType::Clear:
             return "CLS";
             break;
-        case Token::TokenType::Return:
+        case TokenType::Return:
             return "RET";
             break;
-        case Token::TokenType::Jump:
+        case TokenType::Jump:
             return "JP";
             break;
-        case Token::TokenType::Call:
+        case TokenType::Call:
             return "CALL";
             break;
-        case Token::TokenType::SkipNextIfEqual:
+        case TokenType::SkipNextIfEqual:
             return "SE";
             break;
-        case Token::TokenType::SkipNextIfNotEqual:
+        case TokenType::SkipNextIfNotEqual:
             return "SNE";
             break;
-        case Token::TokenType::Load:
+        case TokenType::Load:
             return "LD";
             break;
-        case Token::TokenType::Add:
+        case TokenType::Add:
             return "ADD";
             break;
-        case Token::TokenType::Or:
+        case TokenType::Or:
             return "OR";
             break;
-        case Token::TokenType::And:
+        case TokenType::And:
             return "AND";
             break;
-        case Token::TokenType::Xor:
+        case TokenType::Xor:
             return "XOR";
             break;
-        case Token::TokenType::Sub:
+        case TokenType::Sub:
             return "SUB";
             break;
-        case Token::TokenType::SubFrom:
+        case TokenType::SubFrom:
             return "SUBN";
             break;
-        case Token::TokenType::ShiftRight:
+        case TokenType::ShiftRight:
             return "SHR";
             break;
-        case Token::TokenType::ShiftLeft:
+        case TokenType::ShiftLeft:
             return "SHL";
             break;
-        case Token::TokenType::Random:
+        case TokenType::Random:
             return "RND";
             break;
-        case Token::TokenType::Draw:
+        case TokenType::Draw:
             return "DRW";
             break;
-        case Token::TokenType::SkipIfKeyPressed:
+        case TokenType::SkipIfKeyPressed:
             return "SKP";
             break;
-        case Token::TokenType::SkipIfNotKeyPressed:
+        case TokenType::SkipIfNotKeyPressed:
             return "SKNP";
             break;
-        case Token::TokenType::Index:
+        case TokenType::Index:
             return "I";
             break;
-        case Token::TokenType::IndexAddress:
-
+        case TokenType::IndexAddress:
             out << "[" << literal << "]";
             return out.str();
             break;
-        case Token::TokenType::DelayTimer:
+        case TokenType::DelayTimer:
             return "DT";
             break;
-        case Token::TokenType::Key:
+        case TokenType::Key:
             return "K";
             break;
-        case Token::TokenType::SoundTimer:
+        case TokenType::SoundTimer:
             return "ST";
             break;
-        case Token::TokenType::Font:
+        case TokenType::Font:
             return "F";
             break;
-        case Token::TokenType::BinaryCodedDigit:
+        case TokenType::BinaryCodedDigit:
             return "B";
             break;
-        case Token::TokenType::Register:
+        case TokenType::Register:
             out << "R" << literal;
             return out.str();
             break;
-        case Token::TokenType::Address:
-        case Token::TokenType::Byte:
-        case Token::TokenType::Nibble:
-        case Token::TokenType::Word:
+        case TokenType::Address:
+        case TokenType::Byte:
+        case TokenType::Nibble:
+        case TokenType::Word:
             out << "#" << literal;
             return out.str();
             break;
-        case Token::TokenType::Section:
+        case TokenType::Section:
             return "SECTION";
             break;
-        case Token::TokenType::DataSection:
+        case TokenType::DataSection:
             return ".data";
             break;
-        case Token::TokenType::TextSection:
+        case TokenType::TextSection:
             return ".text";
             break;
-        case Token::TokenType::Label:
+        case TokenType::Label:
             out << ":" << literal;
             return out.str();
             break;
-        case Token::TokenType::Error:
+        case TokenType::Error:
             out << "Error on line (" << lineNumber;
             out << "): " << literal;
             return out.str();
             break;
-        case Token::TokenType::EndOfFile:
+        case TokenType::EndOfFile:
             return "EOF";
             break;
-        case Token::TokenType::EndOfLine:
+        case TokenType::EndOfLine:
             return "EOL";
             break;
         default:

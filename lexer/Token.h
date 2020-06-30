@@ -13,6 +13,7 @@ class Token {
 public:
     enum class TokenType {
         // Instructions
+        System,
         Clear,
         Return,
         Jump,

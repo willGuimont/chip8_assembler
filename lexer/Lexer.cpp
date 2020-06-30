@@ -9,7 +9,7 @@ bool isHexa(char c) {
 }
 
 // TODO refactor
-std::vector<Token> Lexer::parse(const std::string &code) {
+std::vector<Token> Lexer::scan(const std::string &code) {
     const unsigned int codeLength = code.size();
     unsigned int start = 0;
     unsigned int current = 0;

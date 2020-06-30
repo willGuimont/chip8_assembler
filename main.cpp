@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
                   std::istreambuf_iterator<char>());
 
     Lexer lexer;
-    const auto tokens = lexer.parse(source);
+    const auto tokens = lexer.scan(source);
 
     for (const auto t : tokens) {
         std::cout << t.toString() << std::endl;
