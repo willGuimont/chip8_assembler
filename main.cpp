@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "lexer/Lexer.h"
+#include "parser/Parser.h"
 
 int main(int argc, char** argv) {
 
@@ -26,9 +27,13 @@ int main(int argc, char** argv) {
     Lexer lexer;
     const auto tokens = lexer.scan(source);
 
+    // TODO check for error token
     for (const auto t : tokens) {
         std::cout << t.toString() << std::endl;
     }
+
+    const auto parser = Parser();
+    const auto instructions = parser.parse(tokens);
 
     return 0;
 }

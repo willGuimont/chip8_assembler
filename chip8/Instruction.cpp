@@ -4,31 +4,37 @@
 
 #include "Instruction.h"
 
+Instruction::Instruction(Instruction::InstructionType instructionType, std::optional<unsigned int> x,
+                         std::optional<unsigned int> y, std::optional<unsigned int> n, std::optional<unsigned int> kk,
+                         std::optional<unsigned int> nnn, std::optional<Token> token)
+        : instructionType(instructionType),
+          n(n), x(x), y(y),
+          kk(kk), nnn(nnn), token(token) {}
 
-Instruction::Instruction(InstructionType instructionType, unsigned int x, unsigned int y, unsigned int n,
-                         unsigned int kk,
-                         unsigned int nnn) : instructionType(instructionType), n(n), x(x), y(y),
-                                             kk(kk), nnn(nnn) {}
+Instruction Instruction::fromNoParams(Instruction::InstructionType instructionType) {
+    return Instruction(instructionType, std::optional(), std::optional(),
+                       std::optional(), std::optional(), std::optional(), std::optional());
+}
 
 Instruction Instruction::fromAddress(InstructionType instructionType, unsigned int nnn) {
-    return Instruction(instructionType, 0, 0, 0, 0, nnn);
+    return Instruction(instructionType, {}, {}, {}, {}, nnn, {});
 }
 
 Instruction Instruction::fromRegister(InstructionType instructionType, unsigned int x) {
-    return Instruction(instructionType, x, 0, 0, 0, 0);
+    return Instruction(instructionType, x, {}, {}, {}, {}, {});
 }
 
 Instruction Instruction::fromRegisterByte(InstructionType instructionType, unsigned int x, unsigned int kk) {
-    return Instruction(instructionType, x, 0, 0, kk, 0);
+    return Instruction(instructionType, x, {}, {}, kk, {}, {});
 }
 
 Instruction Instruction::fromTwoRegisters(InstructionType instructionType, unsigned int x, unsigned int y) {
-    return Instruction(instructionType, x, y, 0, 0, 0);
+    return Instruction(instructionType, x, y, {}, {}, {}, {});
 }
 
 Instruction Instruction::fromTwoRegistersAndNibble(InstructionType instructionType, unsigned int x, unsigned int y,
                                                    unsigned int n) {
-    return Instruction(instructionType, x, y, n, 0, 0);
+    return Instruction(instructionType, x, y, n, {}, {}, {});
 }
 
 unsigned int Instruction::getByteCode() const {
@@ -49,13 +55,13 @@ unsigned int Instruction::getByteCode() const {
         case InstructionType::Call:
             baseCode = 0x2000u;
             break;
-        case InstructionType::SkipEqualByte:
+        case InstructionType::SkipIfEqualByte:
             baseCode = 0x3000u;
             break;
-        case InstructionType::SkipNotEqualByte:
+        case InstructionType::SkipIfNotEqualByte:
             baseCode = 0x4000u;
             break;
-        case InstructionType::SkipEqualRegister:
+        case InstructionType::SkipIfEqualRegister:
             baseCode = 0x5000u;
             break;
         case InstructionType::LoadByte:
@@ -91,7 +97,7 @@ unsigned int Instruction::getByteCode() const {
         case InstructionType::ShiftLeft:
             baseCode = 0x800Eu;
             break;
-        case InstructionType::SkipNotEqualRegister:
+        case InstructionType::SkipIfNotEqualRegister:
             baseCode = 0x9000u;
             break;
         case InstructionType::LoadIndex:
@@ -106,10 +112,10 @@ unsigned int Instruction::getByteCode() const {
         case InstructionType::Draw:
             baseCode = 0xD000u;
             break;
-        case InstructionType::SkipPressed:
+        case InstructionType::SkipIfKeyPressed:
             baseCode = 0xE09Eu;
             break;
-        case InstructionType::SkipNotPressed:
+        case InstructionType::SkipIfNotKeyPressed:
             baseCode = 0xE0A1u;
             break;
         case InstructionType::LoadDelayTimer:
@@ -139,7 +145,27 @@ unsigned int Instruction::getByteCode() const {
         case InstructionType::ReadRegisters:
             baseCode = 0xF065u;
             break;
+        case InstructionType::SyntaxError:
+            throw std::runtime_error("Tried to compile error");
+            break;
+    }
+    unsigned int byteCode = baseCode;
+
+    if (n.has_value()) {
+        byteCode |= n.value();
+    }
+    if (x.has_value()) {
+        byteCode |= x.value();
+    }
+    if (y.has_value()) {
+        byteCode |= y.value();
+    }
+    if (kk.has_value()) {
+        byteCode |= kk.value();
+    }
+    if (nnn.has_value()) {
+        byteCode |= nnn.value();
     }
 
-    return baseCode | n | (x << 2u) | (y << 1u) | kk | nnn;;
+    return byteCode;
 }

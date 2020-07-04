@@ -8,7 +8,6 @@ bool isHexa(char c) {
     return std::isdigit(c) || ('a' <= c <= 'f') || ('A' <= c <= 'F');
 }
 
-// TODO refactor
 std::vector<Token> Lexer::scan(const std::string &code) {
     const unsigned int codeLength = code.size();
     unsigned int start = 0;
@@ -52,12 +51,14 @@ std::vector<Token> Lexer::scan(const std::string &code) {
                         tokens.push_back(Token(Token::TokenType::Error, lexeme, "Rx, x is supposed to be a hexa number",
                                                numLine));
                     }
-                    tokens.push_back(Token(Token::TokenType::Register, lexeme, lexeme.substr(1, lexeme.size() - 1), numLine));
+                    tokens.push_back(
+                            Token(Token::TokenType::Register, lexeme, lexeme.substr(1, lexeme.size() - 1), numLine));
                 } else if (lexeme.starts_with(":")) {
                     if (lexeme.size() <= 1) {
                         tokens.push_back(Token(Token::TokenType::Error, lexeme, "Empty label", numLine));
                     }
-                    tokens.push_back(Token(Token::TokenType::Label, lexeme, lexeme.substr(1, lexeme.size() - 1), numLine));
+                    tokens.push_back(
+                            Token(Token::TokenType::Label, lexeme, lexeme.substr(1, lexeme.size() - 1), numLine));
                 } else if (lexeme.starts_with('#') && std::all_of(std::begin(lexeme) + 1, std::end(lexeme), isHexa)) {
                     const auto size = lexeme.size() - 1;
                     const auto literal = lexeme.substr(1, size);

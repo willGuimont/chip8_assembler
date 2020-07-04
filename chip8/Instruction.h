@@ -6,6 +6,10 @@
 #define CHIP8_ASSEMBLER_INSTRUCTION_H
 
 #include <cstdint>
+#include <histedit.h>
+#include <optional>
+
+#include "../lexer/Token.h"
 
 class Instruction {
 private:
@@ -15,9 +19,9 @@ private:
         Return,
         Jump,
         Call,
-        SkipEqualByte,
-        SkipNotEqualByte,
-        SkipEqualRegister,
+        SkipIfEqualByte,
+        SkipIfNotEqualByte,
+        SkipIfEqualRegister,
         LoadByte,
         AddByte,
         LoadRegister,
@@ -29,13 +33,13 @@ private:
         ShiftRight,
         SubFrom,
         ShiftLeft,
-        SkipNotEqualRegister,
+        SkipIfNotEqualRegister,
         LoadIndex,
         JumpTo,
         Random,
         Draw,
-        SkipPressed,
-        SkipNotPressed,
+        SkipIfKeyPressed,
+        SkipIfNotKeyPressed,
         LoadDelayTimer,
         LoadKey,
         SetDelayTimer,
@@ -45,19 +49,23 @@ private:
         LoadBinaryCodedDigit,
         WriteRegisters,
         ReadRegisters,
+        SyntaxError,
     };
 
     InstructionType instructionType;
-    unsigned int n;
-    unsigned int x;
-    unsigned int y;
-    unsigned int kk;
-    unsigned int nnn;
+    std::optional<unsigned int> n;
+    std::optional<unsigned int> x;
+    std::optional<unsigned int> y;
+    std::optional<unsigned int> kk;
+    std::optional<unsigned int> nnn;
+    std::optional<Token> token;
 
-    Instruction(InstructionType instructionType, unsigned int x, unsigned int y, unsigned int n, unsigned int kk,
-                unsigned int nnn);
+    Instruction(InstructionType instructionType, std::optional<unsigned int> x, std::optional<unsigned int> y, std::optional<unsigned int> n, std::optional<unsigned int> kk,
+                std::optional<unsigned int> nnn, std::optional<Token> token);
 
 public:
+    static Instruction fromNoParams(InstructionType instructionType);
+
     static Instruction fromAddress(InstructionType instructionType, unsigned int nnn);
 
     static Instruction fromRegister(InstructionType instructionType, unsigned int x);
