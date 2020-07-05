@@ -1,0 +1,7 @@
+:zero
+LD V0, #1
+JP :two
+:one
+JP :zero
+:two
+JP :one

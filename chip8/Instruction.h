@@ -12,7 +12,7 @@
 #include "../lexer/Token.h"
 
 class Instruction {
-private:
+public:
     enum class InstructionType {
         System,
         Clear,
@@ -50,7 +50,9 @@ private:
         WriteRegisters,
         ReadRegisters,
         SyntaxError,
+        MemoryValue,
     };
+private:
 
     InstructionType instructionType;
     std::optional<unsigned int> n;
@@ -58,10 +60,15 @@ private:
     std::optional<unsigned int> y;
     std::optional<unsigned int> kk;
     std::optional<unsigned int> nnn;
-    std::optional<Token> token;
+    std::optional<unsigned int> nnnn;
+    std::optional<std::string> errorMessage;
+    unsigned int errorLineNumber;
 
-    Instruction(InstructionType instructionType, std::optional<unsigned int> x, std::optional<unsigned int> y, std::optional<unsigned int> n, std::optional<unsigned int> kk,
-                std::optional<unsigned int> nnn, std::optional<Token> token);
+    Instruction(InstructionType instructionType, std::optional<unsigned int> x, std::optional<unsigned int> y,
+                std::optional<unsigned int> n, std::optional<unsigned int> kk,
+                std::optional<unsigned int> nnn, std::optional<std::string> errorMessage,
+                unsigned int errorLineNumber = 0,
+                unsigned int nnnn = 0);
 
 public:
     static Instruction fromNoParams(InstructionType instructionType);
@@ -74,10 +81,20 @@ public:
 
     static Instruction fromTwoRegisters(InstructionType instructionType, unsigned int x, unsigned y);
 
-    static Instruction fromTwoRegistersAndNibble(InstructionType instructionType, unsigned int x, unsigned int y, unsigned int n);
+    static Instruction
+    fromTwoRegistersAndNibble(InstructionType instructionType, unsigned int x, unsigned int y, unsigned int n);
+
+    static Instruction error(std::string errorMessage, unsigned int lineNumber);
+
+    static Instruction fromValue(unsigned int value);
 
     [[nodiscard]] unsigned int getByteCode() const;
 
+    InstructionType getInstructionType() const;
+
+    std::optional<std::string> getErrorMessage() const;
+
+    unsigned int getErrorLineNumber() const;
 };
 
 

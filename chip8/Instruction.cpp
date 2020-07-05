@@ -6,14 +6,15 @@
 
 Instruction::Instruction(Instruction::InstructionType instructionType, std::optional<unsigned int> x,
                          std::optional<unsigned int> y, std::optional<unsigned int> n, std::optional<unsigned int> kk,
-                         std::optional<unsigned int> nnn, std::optional<Token> token)
+                         std::optional<unsigned int> nnn, std::optional<std::string> errorMessage,
+                         unsigned int errorLineNumber, unsigned int nnnn)
         : instructionType(instructionType),
           n(n), x(x), y(y),
-          kk(kk), nnn(nnn), token(token) {}
+          kk(kk), nnn(nnn), errorMessage(errorMessage), errorLineNumber(errorLineNumber),
+          nnnn(nnnn) {}
 
 Instruction Instruction::fromNoParams(Instruction::InstructionType instructionType) {
-    return Instruction(instructionType, std::optional(), std::optional(),
-                       std::optional(), std::optional(), std::optional(), std::optional());
+    return Instruction(instructionType, {}, {}, {}, {}, {}, {});
 }
 
 Instruction Instruction::fromAddress(InstructionType instructionType, unsigned int nnn) {
@@ -35,6 +36,14 @@ Instruction Instruction::fromTwoRegisters(InstructionType instructionType, unsig
 Instruction Instruction::fromTwoRegistersAndNibble(InstructionType instructionType, unsigned int x, unsigned int y,
                                                    unsigned int n) {
     return Instruction(instructionType, x, y, n, {}, {}, {});
+}
+
+Instruction Instruction::error(std::string errorMessage, unsigned int lineNumber) {
+    return Instruction(Instruction::InstructionType::SyntaxError, {}, {}, {}, {}, {}, errorMessage, lineNumber);
+}
+
+Instruction Instruction::fromValue(unsigned int value) {
+    return Instruction(Instruction::InstructionType::MemoryValue, {}, {}, {}, {}, {}, {}, 0, value);
 }
 
 unsigned int Instruction::getByteCode() const {
@@ -148,6 +157,12 @@ unsigned int Instruction::getByteCode() const {
         case InstructionType::SyntaxError:
             throw std::runtime_error("Tried to compile error");
             break;
+        case InstructionType::MemoryValue:
+            baseCode = 0;
+            break;
+        default:
+            throw std::runtime_error("Case not handled");
+            break;
     }
     unsigned int byteCode = baseCode;
 
@@ -155,10 +170,10 @@ unsigned int Instruction::getByteCode() const {
         byteCode |= n.value();
     }
     if (x.has_value()) {
-        byteCode |= x.value();
+        byteCode |= x.value() << (2 * 4);
     }
     if (y.has_value()) {
-        byteCode |= y.value();
+        byteCode |= y.value() << (1 * 4);
     }
     if (kk.has_value()) {
         byteCode |= kk.value();
@@ -166,6 +181,21 @@ unsigned int Instruction::getByteCode() const {
     if (nnn.has_value()) {
         byteCode |= nnn.value();
     }
+    if (nnnn.has_value()) {
+        byteCode |= nnnn.value();
+    }
 
     return byteCode;
+}
+
+Instruction::InstructionType Instruction::getInstructionType() const {
+    return instructionType;
+}
+
+std::optional<std::string> Instruction::getErrorMessage() const {
+    return errorMessage;
+}
+
+unsigned int Instruction::getErrorLineNumber() const {
+    return errorLineNumber;
 }

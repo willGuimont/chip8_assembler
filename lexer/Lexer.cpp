@@ -5,7 +5,7 @@
 #include "Lexer.h"
 
 bool isHexa(char c) {
-    return std::isdigit(c) || ('a' <= c <= 'f') || ('A' <= c <= 'F');
+    return std::isdigit(c) || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
 }
 
 std::vector<Token> Lexer::scan(const std::string &code) {
@@ -22,6 +22,9 @@ std::vector<Token> Lexer::scan(const std::string &code) {
             if (start - current == 0) {
                 current++;
                 start = current;
+                if (c == '\n') {
+                    numLine += 1;
+                }
                 continue;
             }
             // Handle end of file

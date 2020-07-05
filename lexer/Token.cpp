@@ -14,7 +14,7 @@ Token::TokenType Token::getTokenType() const {
 
 const std::string &Token::getLexeme() const {
     return lexeme;
-};
+}
 
 const std::string &Token::getLiteral() const {
     return literal;
